@@ -9,6 +9,20 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { useEffect } from "react";
+import { useStore } from "./state/store";
+import { initialiseFeatureFlags } from "./mocks/initialiseFeatureFlags";
+import type { FeatureFlags } from "./state/store";
+
+export default function App() {
+  useEffect(() => {
+    initialiseFeatureFlags().then((flags: FeatureFlags) => {
+      useStore.getState().initializeFeatureFlags(flags);
+    });
+  }, []);
+
+  return <Outlet />;
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -39,10 +53,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </body>
     </html>
   );
-}
-
-export default function App() {
-  return <Outlet />;
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
